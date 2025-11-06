@@ -42,7 +42,7 @@ public class Productos {
     @Column(name="stock_disponible")
     private Integer stockDisponible;
     @Column(name="fecha_pedido", updatable = false)
-    private LocalDateTime fechaPedido = LocalDateTime.now();
+    private LocalDateTime fechaCreacion = LocalDateTime.now();
     @Column(name="fecha_actualizacion")
     private LocalDateTime fechaActualizacion = LocalDateTime.now();
 
