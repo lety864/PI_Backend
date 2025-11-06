@@ -1,5 +1,6 @@
 package org.generation.muebleria.service.interfaces;
 
+import org.generation.muebleria.dto.ProductoRequest;
 import org.generation.muebleria.model.Productos;
 
 import java.util.List;
@@ -13,9 +14,9 @@ public interface IProductoService {
     //trae productos por Id
     Optional<Productos> getProductsById(Long id);
     //agregar producto
-    Productos addProduct(Productos producto);
+    Productos addProduct(ProductoRequest productoDto);
     //actualizar producto
-    Productos updateProductsById(Long id, Productos updateProduct);
+    Productos updateProductsById(Long id, ProductoRequest updateProductDto);
     //borrar producto o en este caso desactivar
     void desactivarProductsById(Long id);
     void activarProductsById(Long id);

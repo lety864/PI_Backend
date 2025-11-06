@@ -1,6 +1,7 @@
 package org.generation.muebleria.controller;
 
 import lombok.AllArgsConstructor;
+import org.generation.muebleria.dto.ProductoRequest;
 import org.generation.muebleria.model.Productos;
 import org.generation.muebleria.service.interfaces.IProductoService;
 import org.springframework.web.bind.annotation.*;
@@ -36,13 +37,13 @@ public class ProductoController {
 
     // url -> /api/productos/admin/add
     @PostMapping(path="/admin/add")
-    public Productos addPorduct(@RequestBody Productos product){
+    public Productos addPorduct(@RequestBody ProductoRequest product){
         return productoService.addProduct(product);
     }
 
     // url -> /api/productos/admin/update/{productId}
     @PutMapping(path ="/admin/update/{productId}")
-    public Productos updateProductsById(@PathVariable("productId")Long id, @RequestBody Productos product){
+    public Productos updateProductsById(@PathVariable("productId")Long id, @RequestBody ProductoRequest product){
         return productoService.updateProductsById(id,product);
     }
 

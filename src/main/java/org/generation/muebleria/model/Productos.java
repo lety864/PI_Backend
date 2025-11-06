@@ -46,4 +46,14 @@ public class Productos {
     @Column(name="fecha_actualizacion")
     private LocalDateTime fechaActualizacion = LocalDateTime.now();
 
+    //relacion muchos -> uno (Categoria)
+    @ManyToOne
+    @JoinColumn(name = "id_categoria", nullable = false)
+    private Categoria categoria;
+
+    //relacion muchos -> uno (Proveedores)
+    @ManyToOne
+    @JoinColumn(name = "id_proveedor", nullable = false)
+    private Proveedor proveedor;
+
 }

@@ -1,10 +1,16 @@
 package org.generation.muebleria.service;
 
 import lombok.AllArgsConstructor;
+import org.generation.muebleria.dto.ProductoRequest;
+import org.generation.muebleria.model.Categoria;
 import org.generation.muebleria.model.Productos;
+import org.generation.muebleria.model.Proveedor;
+import org.generation.muebleria.repository.CategoriaRepository;
 import org.generation.muebleria.repository.ProductoRepository;
+import org.generation.muebleria.repository.ProveedorRepository;
 import org.generation.muebleria.service.interfaces.IProductoService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,6 +22,8 @@ public class ProductoService implements IProductoService {
 
     //inyeccion de dependencia
     public ProductoRepository productoRepository;
+    public CategoriaRepository categoriaRepository;
+    public ProveedorRepository proveedorRepository;
 
 
     @Override
@@ -36,12 +44,34 @@ public class ProductoService implements IProductoService {
     }
 
     @Override
-    public Productos addProduct(Productos producto) {
-        return productoRepository.save(producto);
+    public Productos addProduct(ProductoRequest producto) {
+
+        Categoria categoria = categoriaRepository.findById(producto.getIdCategoria()).orElseThrow(
+                () -> new IllegalArgumentException("La categoría con ID " + producto.getIdCategoria() + " no existe.")
+        );
+        Proveedor proveedor = proveedorRepository.findById(producto.getIdProveedor()).orElseThrow(
+                () -> new IllegalArgumentException("La categoría con ID " + producto.getIdProveedor() + " no existe.")
+        );
+
+        Productos newProducto = new Productos();
+        if(producto.getProducto()!= null) newProducto.setProducto(producto.getProducto());
+        if(producto.getSku() != null) newProducto.setSku(producto.getSku());
+        if(producto.getDescripcion() != null) newProducto.setDescripcion(producto.getDescripcion());
+        if(producto.getPrecioActual() != null) newProducto.setPrecioActual(producto.getPrecioActual());
+        if(producto.getAlto() != null) newProducto.setAlto(producto.getAlto());
+        if(producto.getAncho() != null) newProducto.setAncho(producto.getAncho());
+        if(producto.getProfundidad() != null) newProducto.setProfundidad(producto.getProfundidad());
+        if(producto.getPeso() != null) newProducto.setPeso(producto.getPeso());
+        if(producto.getStockDisponible() != null) newProducto.setStockDisponible(producto.getStockDisponible());
+
+        newProducto.setCategoria(categoria);
+        newProducto.setProveedor(proveedor);
+
+        return productoRepository.save(newProducto);
     }
 
     @Override
-    public Productos updateProductsById(Long id, Productos updateProduct) {
+    public Productos updateProductsById(Long id, ProductoRequest updateProduct) {
         Optional<Productos> optionalProduct = productoRepository.findById(id);
         if(optionalProduct.isEmpty()) throw new IllegalArgumentException("El producto no existe");
         //obteniendo el producto de la bd
@@ -54,8 +84,21 @@ public class ProductoService implements IProductoService {
         if(updateProduct.getAncho() != null) productDB.setAncho(updateProduct.getAncho());
         if(updateProduct.getProfundidad() != null) productDB.setProfundidad(updateProduct.getProfundidad());
         if(updateProduct.getPeso() != null) productDB.setPeso(updateProduct.getPeso());
-        if(updateProduct.getActivo() != null) productDB.setActivo(updateProduct.getActivo());
+        //if(updateProduct.getActivo() != null) productDB.setActivo(updateProduct.getActivo());
         if(updateProduct.getStockDisponible() != null) productDB.setStockDisponible(updateProduct.getStockDisponible());
+
+        if (updateProduct.getIdCategoria() != null) {
+            Categoria categoria = categoriaRepository.findById(updateProduct.getIdCategoria())
+                    .orElseThrow(() -> new IllegalArgumentException("La categoría con ID " + updateProduct.getIdCategoria() + " no existe."));
+            productDB.setCategoria(categoria);
+        }
+
+        if (updateProduct.getIdProveedor() != null) {
+            Proveedor proveedor = proveedorRepository.findById(updateProduct.getIdProveedor())
+                    .orElseThrow(() -> new IllegalArgumentException("El proveedor con ID " + updateProduct.getIdProveedor() + " no existe."));
+            productDB.setProveedor(proveedor);
+        }
+
         //fecha creacion no se actualiza
         //fecha actualizacion se actualiza al momento de guardado
         productDB.setFechaActualizacion(LocalDateTime.now());
